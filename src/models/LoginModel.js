@@ -16,6 +16,23 @@ class Login {
         this.user = null;
     };
 
+    async login() {
+        this.valida();
+        if(this.errors.length > 0) return;
+        this.user = await LoginModel.findOne({ email: this.body.email });
+
+        if(!this.user) {
+            this.errors.push('Usuário não existe.');
+            return;
+        };
+
+        if(!bcryptjs.compareSync(this.body.password, this.user.password)) {
+            this.errors.push('Senha inválida');
+            this.user = null;
+            return;
+        };
+    };
+
     async register() {
         this.valida();
         if(this.errors.length > 0) return;
@@ -28,18 +45,14 @@ class Login {
         const salt = bcryptjs.genSaltSync();
         this.body.password = bcryptjs.hashSync(this.body.password, salt);
         
-        try {
-            this.user = await LoginModel.create(this.body);
-        } catch(error) {
-            console.log(error);
-        }
+        this.user = await LoginModel.create(this.body);
     };
 
     async userExists() {
         // Procurando se já existe um email cadastrado
-        const user = await LoginModel.findOne({ email: this.body.email });
-        if(user) this.errors.push('Usuário já existe.');
-    }
+        this.user = await LoginModel.findOne({ email: this.body.email });
+        if(this.user) this.errors.push('Usuário já existe.');
+    };
 
     valida() {
         // Validação dos campos
@@ -50,7 +63,7 @@ class Login {
         if(!validator.isEmail(this.body.email)) this.errors.push('E-mail inválido');
         if(this.body.password.length < 3 || this.body.password.length > 50) {
             return this.errors.push('A senha precisa ter entre 3 e 50 caracteres');
-        }
+        };
     };
 
     cleanUp() {
