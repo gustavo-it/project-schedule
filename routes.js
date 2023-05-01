@@ -1,8 +1,12 @@
 const express = require('express');
 const route = express.Router();
 const homeController = require('./src/controllers/homeController')
+const loginController = require('./src/controllers/loginController')
 
-route.get('/formulario', homeController.formulario);
-route.post('/formulario', homeController.trataForm);
+// Rotas home
+route.get('/', homeController.index);
+
+// Rotas de longing
+route.get('/login/index', loginController.index);
 
 module.exports = route;
