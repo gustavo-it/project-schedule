@@ -1,7 +1,6 @@
 exports.middlewareGlobal = (req, res, next) => {
-    if(req.body.cliente) {
-        console.log(`Vi que você postou ${req.body.cliente}`)
-    };
+    res.locals.errors = req.flash('errors');
+    res.locals.success = req.flash('success');
     next();
 };
 
