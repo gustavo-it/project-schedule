@@ -18,6 +18,12 @@ class Contato {
         this.contato = null;
     };
 
+    async buscaPorId(id) {
+        if(typeof id !== 'string') return;
+        const user = await ContatoModel.findById(id);
+        return user;
+    };
+
     async register() {
         this.valida();
         
@@ -50,11 +56,13 @@ class Contato {
         };
     };
 
-    async buscaPorId(id) {
+    async edit(id) {
         if(typeof id !== 'string') return;
-        const user = await ContatoModel.findById(id);
-        return user;
+        this.valida();
+        if(this.errors.length > 0) return;
+        // Passamos o id, o corpo da requisição, e passando um objeto indicando para retornar o contato atualizado 
+        this.contato = await ContatoModel.findByIdAndUpdate(id, this.body, { new: true });
     };
-}
+};
 
 module.exports = Contato;
