@@ -63,6 +63,20 @@ class Contato {
         // Passamos o id, o corpo da requisição, e passando um objeto indicando para retornar o contato atualizado 
         this.contato = await ContatoModel.findByIdAndUpdate(id, this.body, { new: true });
     };
+
+    // Métodos estáticos
+    static async buscaContato() {
+        // Ordenando os contato através da chave criadoEm
+        // 1 = Ordem crescente, -1 = Ordem decrescente
+        const contatos = await ContatoModel.find().sort({ criadoEm: 1 });
+        return contatos;
+    };
+
+    static async delete(id) {
+        if(typeof id !== 'string') return;
+        const contato = await ContatoModel.findOneAndDelete(id);
+        return contato;
+    };
 };
 
 module.exports = Contato;
